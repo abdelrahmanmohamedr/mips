@@ -7,7 +7,7 @@ wire [31:0]address;
 reg [31:0]nins;
 wire [31:0]ntocins;
 wire [31:0]instruction;
-reg signed [31:0]write_data;
+wire signed [31:0]write_data;
 wire signed [31:0]data_out_one;
 wire signed [31:0]data_out_two;
 reg signed [31:0]second;
@@ -33,7 +33,7 @@ wire [2:0]Branch;
 wire [1:0]RegDst;
 wire [1:0]MemToReg;
 
-reg PCsrc;
+wire PCsrc;
 wire zero;
 wire overflow;
 wire negative;
@@ -58,6 +58,10 @@ alu_control_ alu_control_ (AluOp , func ,alu_control);
 data_mem data_mem (data_out_two, out,  MemWrite , clk , Memeread, data_mem_out);
 
 control_unit control_unit (op , Jump, Memeread, MemWrite, AluSrc, RegWrite ,RegDst, MemToReg ,AluOp ,Branch);
+
+write_data_reg write_data_reg (MemToReg , out ,data_mem_out ,ntocins , write_data);
+
+pcsc_value pcsc_value ( zero , overflow , negative ,Branch ,PCsrc);
 
 sign_zero_extinsion sign_zero_extinsion ( immediate , op , immediate_);
 
@@ -90,45 +94,8 @@ case (AluSrc)
     default: second = 32'h00000000;
 endcase
 end
-    
-always @(*) begin
-case (MemToReg)
-    2'b00: write_data = out;
-    2'b01: write_data = data_mem_out;
-    2'b10: write_data = ntocins;
-    2'b11: write_data = 32'h00000000;
-endcase
-end
 
 assign branch_offset = ntocins + (immediate_ * 4);
-
-always @(*) begin
-    if (Branch == 3'b001 && zero == 1'b1 && overflow == 1'b0) begin
-        PCsrc = 1'b1;
-    end else begin
-    if (Branch == 3'b010 && zero == 1'b0) begin
-        PCsrc = 1'b1;
-        end else begin
-    if (Branch == 3'b011 && (zero == 1'b1 || negative == 1'b0)) begin
-        PCsrc = 1'b1;
-    end else begin
-    if (Branch == 3'b011 && negative == 1'b1) begin
-        PCsrc = 1'b1;
-    end else begin
-    if (Branch == 3'b100 && (zero == 1'b1 || negative == 1'b1)) begin
-        PCsrc = 1'b1;
-    end else begin
-    if (Branch == 3'b101 && negative == 1'b0) begin
-        PCsrc = 1'b1;
-    end else begin
-        PCsrc = 1'b0;
-    end
-    end
-    end
-    end     
-        end
-    end
-end
     
 always @(*) begin
 if (PCsrc) begin

@@ -6,7 +6,9 @@ always @(*) begin
         data_out <= {ram_block[address] , ram_block[address+1] , ram_block[address+2] , ram_block[address+3]};
 end
 
-
+initial begin
+    $readmemh("instructions.mem" , ram_block);
+end
 
 endmodule
 

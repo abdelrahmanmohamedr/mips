@@ -21,6 +21,10 @@ always @(*) begin
         data_out_two <= ram_block[rt];
 
 end
+
+initial begin
+    $readmemh("register.mem" , ram_block);
+end
       
 
 endmodule
