@@ -1,4 +1,4 @@
-module pcsc_value (input zero , overflow , negative ,input [2:0] Branch , output reg PCsrc);
+module pcsrc_value (input zero , overflow , negative ,input [2:0] Branch , output reg PCsrc);
     
 always @(*) begin
     if (Branch == 3'b001 && zero == 1'b1 && overflow == 1'b0) begin
