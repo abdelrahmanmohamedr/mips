@@ -61,7 +61,7 @@ control_unit control_unit (op , Jump, Memeread, MemWrite, AluSrc, RegWrite ,RegD
 
 write_data_reg write_data_reg (MemToReg , out ,data_mem_out ,ntocins , write_data);
 
-pcsc_value pcsc_value ( zero , overflow , negative ,Branch ,PCsrc);
+pcsrc_value pcsrc_value ( zero , overflow , negative ,Branch ,PCsrc);
 
 sign_zero_extinsion sign_zero_extinsion ( immediate , op , immediate_);
 
